@@ -1,0 +1,39 @@
+
+workflows:
+  test-workflow:
+    name: Test Workflow
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.betterment.alchemist-example
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Flutter format
+        script: |
+          dart format --set-exit-if-changed .
+      - name: Flutter unit tests
+        script: |
+          mkdir -p test-results
+          flutter test --update-goldens --no-pub --coverage --test-randomize-ordering-seed=random --machine > test-results/flutter.json
+        test_report: test-results/flutter.json
+      - name: Setup code signing settings
+        script: |
+          xcode-project use-profiles
+      - name: Build iOS project
+        working_directory: example
+        script: |  
+         flutter build ipa --release \
+           --export-options-plist=/Users/builder/export_options.plist
+      - name: Build Android project 
+        working_directory: example
+        script: |
+           flutter build appbundle --release
+    artifacts:
+      - $CM_BUILD_DIR/example/build/ios/ipa/*.ipa
+      - $CM_BUILD_DIR/example/build/**/outputs/**/*.aab
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
