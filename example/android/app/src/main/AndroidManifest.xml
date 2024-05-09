@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.betterment.alchemist-example">
+    package="com.betterment.alchemist">
    <application
         android:label="example"
         android:name="${applicationName}"

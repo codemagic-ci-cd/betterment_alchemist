@@ -1,4 +1,4 @@
-package com.betterment.alchemist-example
+package com.betterment.alchemist
 
 import io.flutter.embedding.android.FlutterActivity
 
